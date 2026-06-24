@@ -1,0 +1,51 @@
+name: Pipeline Dictionnaire Yipunu
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * *'   # chaque jour à 4h UTC
+
+jobs:
+  build-dictionary:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Récupérer le code
+      uses: actions/checkout@v4
+
+    - name: Installer Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Installer les dépendances
+      run: pip install -r requirements.txt
+
+    - name: 1. Extraction Wordland (SRC_01)
+      run: python scripts/01_extract_wordland.py
+
+    - name: 2. Téléchargement des PDF (SRC_02, SRC_03, SRC_04)
+      run: python scripts/02_download_pdfs.py
+
+    - name: 3. Analyse des PDF
+      run: python scripts/03_parse_books.py
+
+    - name: 4. Extraction Sorosoro (SRC_05)
+      run: python scripts/04_extract_sorosoro.py
+
+    - name: 5. Fusion et nettoyage final
+      run: python scripts/05_merge_dictionary.py
+
+    - name: Sauvegarder l'artefact final
+      uses: actions/upload-artifact@v4
+      with:
+        name: dictionnaire-yipunu
+        path: dictionnaire_yipunu_officiel.json
+
+    - name: Commit et push du nouveau dictionnaire
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add dictionnaire_yipunu_officiel.json
+        git diff --staged --quiet || git commit -m "Mise à jour automatique du dictionnaire [skip ci]"
+        git push
