@@ -24,21 +24,23 @@ jobs:
     - name: Installer les dépendances
       run: pip install -r requirements.txt
 
-    - name: 1. Extraction Wordland (SRC_01)
-      run: python scripts/01_extract_wordland.py
+    # Les étapes commentées (avec #) sont désactivées pour le test
+    # - name: 1. Extraction Wordland (SRC_01)
+    #   run: python scripts/01_extract_wordland.py
 
-    - name: 2. Téléchargement des PDF (SRC_02, SRC_03, SRC_04)
-      run: python scripts/02_download_pdfs.py
+    # - name: 2. Téléchargement des PDF (SRC_02, SRC_03, SRC_04)
+    #   run: python scripts/02_download_pdfs.py
 
-    - name: 3. Analyse des PDF
-      run: python scripts/03_parse_books.py
+    # - name: 3. Analyse des PDF
+    #   run: python scripts/03_parse_books.py
 
     - name: 4. Extraction Sorosoro (SRC_05)
       run: python scripts/04_extract_sorosoro.py
 
-    - name: 5. Fusion et nettoyage final
-      run: python scripts/05_merge_dictionary.py
+    # - name: 5. Fusion et nettoyage final
+    #   run: python scripts/05_merge_dictionary.py
 
+    # Sauvegarde et commit seront exécutés mais n'ajouteront rien si aucun fichier n'est généré
     - name: Sauvegarder l'artefact final
       uses: actions/upload-artifact@v4
       with:
