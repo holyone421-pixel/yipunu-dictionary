@@ -3,7 +3,10 @@ name: Pipeline Dictionnaire Yipunu
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 4 * * *'   # chaque jour à 4h UTC
+    - cron: '0 4 * * *'
+
+permissions:
+  contents: write
 
 jobs:
   build-dictionary:
