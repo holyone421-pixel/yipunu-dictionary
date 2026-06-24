@@ -29,8 +29,9 @@ def normaliser(mot):
 
 def extraire_paires(texte):
     paires = {}
+    # Motif très souple : mot_yipunu suivi de : ou - ou , puis trad
     motif = re.compile(
-        r'(?:^|\n)\s*([^\d\s]{1,30})\s*[-:]\s*((?:(?:[^\d\n]{1,30})\s?){1,4})',
+        r'([^\d\s]{1,30})\s*[:,\-]\s*((?:(?:[^\d\n]{1,30})\s?){1,4})',
         re.MULTILINE
     )
     for match in motif.finditer(texte):
@@ -57,6 +58,12 @@ def main():
         response = requests.get(URL, timeout=30)
         soup = BeautifulSoup(response.content, 'html.parser')
         texte = soup.get_text(separator='\n')
+        
+        # Afficher un extrait pour diagnostic
+        print("=== EXTRAIT DU TEXTE RÉCUPÉRÉ (500 premiers caractères) ===")
+        print(texte[:500])
+        print("==============================================================")
+        
         paires = extraire_paires(texte)
         with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
             json.dump(paires, f, ensure_ascii=False, indent=2)
